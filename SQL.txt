@@ -44,3 +44,5 @@ INSERT INTO `risk_levels` (`id`, `name`, `kyst_border`, `created_at`, `updated_a
 INSERT INTO `risk_levels` (`id`, `name`, `kyst_border`, `created_at`, `updated_at`) VALUES (5, 'Высокий ', 0.45, '2017-05-09 22:54:50', '2017-05-09 22:54:51');
 INSERT INTO `risk_levels` (`id`, `name`, `kyst_border`, `created_at`, `updated_at`) VALUES (6, 'Очень высокий ', 0.30, '2017-05-09 22:55:01', '2017-05-09 22:55:01');
 INSERT INTO `risk_levels` (`id`, `name`, `kyst_border`, `created_at`, `updated_at`) VALUES (7, 'Неприемлемый ', 0.15, '2017-05-09 22:55:19', '2017-05-09 22:55:19');
+
+11
