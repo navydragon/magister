@@ -32,16 +32,15 @@
                 {{ csrf_field() }}
                 <table class="table table-bordered">
                     <thead>
-                        <tr><th>Машина</th><th>Коэффициент использования по времени</th><th>Коэффициент режима работы</th><th>% времени в движении</th><th>% времени во вращении</th></tr>
+                        <tr><th>Машина</th><th>Коэффициент использования по времени</th><th>Коэффициент режима работы механизма передвижения</th><th>Коэффициент режима работы механизма поворота</th></tr>
                     </thead>
                     <tbody>
                     @foreach($calculation->our_machines_pivot()->get() as $our_machine)
                     <tr>
                         <td>{{$our_machine->machine_type->name}} (№{{$our_machine->tabnum}})</td>
                         <td><input class="form-control" name="kiv[{{$our_machine->id}}]" value="0.85"></td>
-                        <td><input class="form-control" name="kmode[{{$our_machine->id}}]" value="0.5"></td>
-                        <td><input class="form-control" name="moving_perc[{{$our_machine->id}}]" value="10"></td>
-                        <td><input class="form-control" name="rotation_perc[{{$our_machine->id}}]" value="50"></td>
+                        <td><input class="form-control" name="moving_kmode[{{$our_machine->id}}]" value="0.1"></td>
+                        <td><input class="form-control" name="rotation_kmode[{{$our_machine->id}}]" value="0.5"></td>
                     </tr>
                     @endforeach
                     </tbody>

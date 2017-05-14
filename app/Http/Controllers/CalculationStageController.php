@@ -18,7 +18,7 @@ class CalculationStageController extends Controller
 
    		foreach($request->kiv as $key => $value)
    		{
-   			$stage->our_machines_pivot()->attach($key, ['kiv' => $request->kiv[$key], 'kmode' => $request->kmode[$key], 'moving_perc' => $request->moving_perc[$key], 'rotation_perc' => $request->rotation_perc[$key]]);
+   			$stage->our_machines_pivot()->attach($key, ['kiv' => $request->kiv[$key], 'moving_kmode' => $request->moving_kmode[$key], 'rotation_kmode' => $request->rotation_kmode[$key]]);
    		}
 	   	return back();
 	}

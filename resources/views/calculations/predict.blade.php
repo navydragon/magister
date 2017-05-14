@@ -21,7 +21,7 @@
 					<tr>
 					<th rowspan="2">Этапы/Агрегаты</th>
 						@foreach ($our_machine->parts()->get() as $part)
-						<td colspan="4"><b>{{$part->machine_part->name}}</b></td>
+						<td colspan="5"><b>{{$part->machine_part->name}}</b></td>
 						@endforeach	
 					</tr>
 					<tr>
@@ -30,7 +30,7 @@
 							$times[$part->id][0] = $part->init_time; 
 							$act_time[$part->id] = $part->init_time;
 						@endphp
-						<td>Наработка</td><td>КПД</td><td>Куст</td><td>Замена?</td>
+						<td>Наработка</td><td>Ур. оптимизма</td><td>КПД</td><td>Куст</td><td>Замена?</td>
 						@endforeach	
 					</tr>
 				</thead>
@@ -54,6 +54,8 @@
 									$nar = $stage->narabotka($our_machine,$part);
 									$act_time[$part->id] += $nar;
 									$times[$part->id][$stage->stage_num] = $act_time[$part->id]; 
+							//оптимизм
+									$optimism = $part->optimism($stage);
 							//КПД
 									$eff = $part->efficiency($act_time[$part->id]);
 							//КУСТ
@@ -62,6 +64,7 @@
 
 								@endphp
 								<td>{{$act_time[$part->id]}} (+{{$nar}})</td>
+								<td>{{$optimism}}</td>
 								<td>{{round($eff,3)}}</td>
 								<td bgcolor="{{$bgcolor}}">{{round($kyst,3)}}</td>
 							

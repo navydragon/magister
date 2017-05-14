@@ -20,9 +20,11 @@ class CalculationsStagesOurMachinesTable extends Migration
             $table->integer('our_machine_id')->unsigned()->index();
             $table->foreign('our_machine_id')->references('id')->on('our_machines')->onDelete('cascade');
             $table->float('kiv');
-            $table->float('kmode');
-            $table->integer('moving_perc');
-            $table->integer('rotation_perc');
+            $table->float('moving_kmode');
+            $table->float('rotation_kmode');
+            //$table->float('kmode');
+            //$table->integer('moving_perc');
+            //$table->integer('rotation_perc');
             $table->timestamps();
         });
     }
