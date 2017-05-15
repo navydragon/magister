@@ -42,6 +42,7 @@
 								<td></td>
 								<td></td>
 								<td></td>
+								<td></td>
 							@endforeach
 						</tr>
 						@foreach($calculation->calculation_stages()->get() as $stage)
@@ -57,16 +58,17 @@
 							//оптимизм
 									$optimism = $part->optimism($stage);
 							//КПД
-									$eff = $part->efficiency($act_time[$part->id]);
+									$eff = $part->efficiency($act_time[$part->id],$stage);
+									if ($eff < 0.7) {$eff=0.7;}
 							//КУСТ
-									$kyst = $part->kyst($eff,$nar,$act_time[$part->id]);
-									$bgcolor = $part->bgcolor($kyst);
+									$kyst = $part->kyst($eff,$nar,$act_time[$part->id],$stage);
+									//$bgcolor = $part->bgcolor($kyst);
 
 								@endphp
 								<td>{{$act_time[$part->id]}} (+{{$nar}})</td>
 								<td>{{$optimism}}</td>
 								<td>{{round($eff,3)}}</td>
-								<td bgcolor="{{$bgcolor}}">{{round($kyst,3)}}</td>
+								<td bgcolor="{{$bgcolor}}">{{$kyst}}</td>
 							
 							@php
 							//ЗАМЕНЫ
