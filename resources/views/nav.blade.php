@@ -32,16 +32,16 @@
                             <a href="/"><i class="fa fa-dashboard fa-fw"></i> Главная</a>
                         </li>
                         <li>
-                            <a href="/machine_types"><i class="fa fa-table fa-fw"></i>Типы машин</a>
+                            <a href="/machine_types"><i class="fa fa-table fa-fw"></i>Модели машин</a>
                         </li>
                         <li>
                             <a href="/our_machines"><i class="fa fa-table fa-fw"></i>Машины</a>
                         </li>
                         <li>
-                            <a href="part_types"><i class="fa fa-edit fa-fw"></i>Типы запасных частей</a>
+                            <a href="part_types"><i class="fa fa-edit fa-fw"></i>Типы оборудования</a>
                         </li>
                         <li>
-                            <a href="/parts"><i class="fa fa-edit fa-fw"></i>Запасные части</a>
+                            <a href="/parts"><i class="fa fa-edit fa-fw"></i>Модели оборудования</a>
                         </li>
                         <li>
                             <a href="/drivers"><i class="fa fa-edit fa-fw"></i>Персонал</a>

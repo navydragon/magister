@@ -29,3 +29,12 @@ Route::get('/our_machines', 'OurMachineController@index');
 Route::post('/our_machines/create', 'OurMachineController@create');
 Route::post('/our_machines', 'OurMachineController@store');
 
+Route::get('/drivers', 'DriverController@index');
+Route::post('/drivers', 'DriverController@store');
+
+Route::get('/part_types', 'PartTypeController@index');
+Route::post('/part_types', 'PartTypeController@store');
+
+
+Route::get('/parts', 'PartController@index');
+Route::post('/parts', 'PartController@store');
