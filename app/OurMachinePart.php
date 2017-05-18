@@ -137,7 +137,7 @@ class OurMachinePart extends Model
             if ($tot_nar <= $mtbf ) 
                 { $kyst_v = 0.99;}
             else {$kyst_v = 1 - ($tot_nar / $mtbf - 1);}
-            $kyst = round($kyst_p*$kyst_v,3)."(".$t_ost.")";
+            $kyst = round($kyst_p*$kyst_v,3);
         }else{
            
             $kyst = "!";
