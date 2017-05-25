@@ -92,7 +92,7 @@ class OurMachinePart extends Model
         return round($optimism);
    }
 
-    public function efficiency($nar,CalculationStage $stage)
+    public function efficiency($prev_eff,$nar,CalculationStage $stage)
     {
         $calcs = 1000; $work_arr = array();$work_arr2 = array();
         //if ($this->work_type() == "rotation") {$a1_ap = 0.012; $a2_ap = 0.065; $b_ap = 0.895;}
@@ -116,6 +116,7 @@ class OurMachinePart extends Model
             if ($i%10 == 0) {array_push($work_arr2,$work_arr[$i]);}
         }
             sort($work_arr2);
+            if ($work_arr2[$optimism] > $prev_eff) { return $prev_eff-0.001;}
 		return $work_arr2[$optimism];
     }
 
@@ -130,7 +131,7 @@ class OurMachinePart extends Model
         $a = $a1_ap+ ($a2_ap - $a1_ap) / 100 * (100-$optimism);
         if ($kpd >= 0.7)
         {
-            $t_max = round(sqrt(($b_ap-0.7)/($a/1000000)));
+            $t_max = round(sqrt(($b_ap-0.7)/($a_sr/1000000)));
             $t_ost = $t_max - $tot_nar;
             $kyst_p = 1 - 200 / $t_ost;
             $mtbf = $this->part->mtbf;

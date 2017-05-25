@@ -30,17 +30,23 @@
             <h4>Добавить этап</h4>
             <form method="POST" action="/calculations/{{$calculation->id}}/stages">
                 {{ csrf_field() }}
+
                 <table class="table table-bordered">
                     <thead>
                         <tr><th>Машина</th><th>Коэффициент использования по времени</th><th>Коэффициент режима работы механизма передвижения</th><th>Коэффициент режима работы механизма поворота</th></tr>
                     </thead>
                     <tbody>
                     @foreach($calculation->our_machines_pivot()->get() as $our_machine)
+                        @php
+                            $mov = rand(1,5) / 10;
+                            $rot = rand(1,4) / 10;
+                            $rot += $mov;
+                        @endphp
                     <tr>
                         <td>{{$our_machine->machine_type->name}} (№{{$our_machine->tabnum}})</td>
                         <td><input class="form-control" name="kiv[{{$our_machine->id}}]" value="0.85"></td>
-                        <td><input class="form-control" name="moving_kmode[{{$our_machine->id}}]" value="0.1"></td>
-                        <td><input class="form-control" name="rotation_kmode[{{$our_machine->id}}]" value="0.5"></td>
+                        <td><input class="form-control" name="moving_kmode[{{$our_machine->id}}]" value="{{$mov}}"></td>
+                        <td><input class="form-control" name="rotation_kmode[{{$our_machine->id}}]" value="{{$rot}}"></td>
                     </tr>
                     @endforeach
                     </tbody>

@@ -11,7 +11,7 @@
 		<div class="col-lg-12">
 			<h4>Таблицы показателей</h4>
 				@php
-					$times = array();	$act_time = array();	
+					$times = array();	$act_time = array();	$eff_a = array();
 					$change_on_machines = array(); $change_on_parts = array(); $change_on_stages = array()
 				@endphp
 			@foreach ($calculation->our_machines_pivot()->get() as $our_machine)
@@ -59,8 +59,12 @@
 							//оптимизм
 									$optimism = $part->optimism($stage);
 							//КПД
-									$eff = $part->efficiency($act_time[$part->id],$stage);
+									if ($eff_a[$part->id][$stored_stage] == 0) {$eff_a[$part->id][$stored_stage] = 1;}
+									$eff = $part->efficiency($eff_a[$part->id][$stored_stage], $act_time[$part->id],$stage);
 									if ($eff < 0.7) {$eff=0.7;}
+									$eff_a[$part->id][$stage->stage_num] = $eff;
+
+									
 							//КУСТ
 									$kyst = $part->kyst($eff,$nar,$act_time[$part->id],$stage);
 									$bgcolor = $part->bgcolor($kyst);
@@ -81,13 +85,16 @@
 									$change_on_parts[$part->id] += 1;
 									$change_on_stages[$stage->id] += 1;
 									$change_on_machines[$our_machine->id] += 1;
-
+									$eff_a[$part->id][$stage->stage_num] = 1;
 								}
 							@endphp
 								<td>{{$change}}</td>
 							@endforeach
 						
 							</tr>
+							@php
+								$stored_stage = $stage->stage_num;
+							@endphp
 						@endforeach
 				</tbody>
 			</table>
