@@ -66,21 +66,32 @@ class OurMachinePart extends Model
        $x = new Fuzzy_Logic();
         $x->clearMembers(); 
         $x->SetInputNames(array('kmode','staff'));
-        $x->addMember($x->getInputName(0),'lite',  0, 20, 40 ,LINFINITY);
+        $x->addMember($x->getInputName(0),'lite',  0, 20, 50 ,LINFINITY);
         $x->addMember($x->getInputName(0),'average'  , 20, 50, 80 ,TRIANGLE);
-        $x->addMember($x->getInputName(0),'tough'  , 60, 80, 100,RINFINITY);
-        $x->addMember($x->getInputName(1),'low', 0, 20, 70,LINFINITY);
-        $x->addMember($x->getInputName(1),'high',30, 80,100,RINFINITY);
+        $x->addMember($x->getInputName(0),'tough'  , 50, 80, 100,RINFINITY);
+        $x->addMember($x->getInputName(1),'low', 0, 20, 50,LINFINITY);
+        $x->addMember($x->getInputName(1),'average'  , 20, 50, 80 ,TRIANGLE);
+        $x->addMember($x->getInputName(1),'high',50, 80,100,RINFINITY);
         $x->SetOutputNames(array('optimism'));
-        $x->addMember($x->getOutputName(0),'low',0, 20 ,40 ,LINFINITY);
-        $x->addMember($x->getOutputName(0),'normal',20, 50 ,80 ,TRIANGLE);
-        $x->addMember($x->getOutputName(0),'high',60,  80 , 100 ,RINFINITY);
+        $x->addMember($x->getOutputName(0),'verylow',0, 10 ,30 ,LINFINITY);
+        $x->addMember($x->getOutputName(0),'low',15, 30 ,45 ,TRIANGLE);
+        $x->addMember($x->getOutputName(0),'average',30, 50 ,70 ,TRIANGLE);
+        $x->addMember($x->getOutputName(0),'high',55,  70 , 85 ,TRIANGLE);
+        $x->addMember($x->getOutputName(0),'veryhigh',70,  90 , 100 ,RINFINITY);
         $x->clearRules();
-        $x->addRule('IF kmode.lite THEN optimism.high');
-        //$x->addRule('IF kmode.lite AND staff.low THEN optimism.normal');
-        $x->addRule('IF kmode.average AND staff.high THEN optimism.normal');
+
+        $x->addRule('IF kmode.lite AND staff.high THEN optimism.veryhigh');
+        $x->addRule('IF kmode.lite AND staff.average THEN optimism.high');
+        $x->addRule('IF kmode.lite AND staff.low THEN optimism.average');
+
+        $x->addRule('IF kmode.average AND staff.high THEN optimism.high');
+        $x->addRule('IF kmode.average AND staff.average THEN optimism.average');
         $x->addRule('IF kmode.average AND staff.low THEN optimism.low');
-        $x->addRule('IF kmode.tough THEN optimism.low');
+
+        $x->addRule('IF kmode.tough AND staff.high THEN optimism.average');
+        $x->addRule('IF kmode.tough AND staff.average THEN optimism.low');
+        $x->addRule('IF kmode.tough AND staff.low THEN optimism.verylow');
+        
         //$kmode = 65;
         //$staff = 50;
 
@@ -155,7 +166,8 @@ class OurMachinePart extends Model
            
             $kyst = "!";
         }
-        return $kyst."(".$t_max."/".$t_ost.")(".round($kyst_p,2).")(".round($kyst_v,2).")";
+        return $kyst."(".$t_max."/".$t_ost.")";
+        //."(".$t_max."/".$t_ost.")"(".round($kyst_p,2).")(".round($kyst_v,2).")";
     }
 
     public function bgcolor($kyst)

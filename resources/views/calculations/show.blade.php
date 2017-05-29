@@ -63,8 +63,8 @@
                     <tbody>
                     @foreach($calculation->our_machines_pivot()->get() as $our_machine)
                         @php
-                            $mov = rand(1,5) / 10;
-                            $rot = rand(1,4) / 10;
+                            $mov = rand(1,3) / 10;
+                            $rot = rand(2,6) / 10;
                             $rot += $mov;
                         @endphp
                     <tr>
