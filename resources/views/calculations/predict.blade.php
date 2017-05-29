@@ -42,7 +42,7 @@
 								<td>{{$times[$part->id][0]}}</td>
 								<td></td>
 								<td></td>
-								<td></td>
+								<td>~{{round($part->first_efficiency($part->init_time),2)}}</td>
 								<td></td>
 							@endforeach
 						</tr>
@@ -54,14 +54,19 @@
 								@php
 							//наработка
 									$nar = $stage->narabotka($our_machine,$part);
+									$old_time = $act_time[$part->id];
 									$act_time[$part->id] += $nar;
 									$times[$part->id][$stage->stage_num] = $act_time[$part->id]; 
 							//оптимизм
 									$optimism = $part->optimism($stage);
 							//КПД
-									if ($eff_a[$part->id][$stored_stage] == 0) {$eff_a[$part->id][$stored_stage] = 1;}
-									$eff = $part->efficiency($eff_a[$part->id][$stored_stage], $act_time[$part->id],$stage);
-									if ($eff < 0.7) {$eff=0.7;}
+									if ($eff_a[$part->id][$stored_stage] == 0) 
+									{
+										$eff = $part->first_efficiency($part->init_time);
+									}else{
+										$eff = $part->efficiency($eff_a[$part->id][$stored_stage], $old_time, $act_time[$part->id],$stage);
+									}
+									
 									$eff_a[$part->id][$stage->stage_num] = $eff;
 
 									
@@ -85,7 +90,7 @@
 									$change_on_parts[$part->id] += 1;
 									$change_on_stages[$stage->id] += 1;
 									$change_on_machines[$our_machine->id] += 1;
-									$eff_a[$part->id][$stage->stage_num] = 1;
+									$eff_a[$part->id][$stage->stage_num] = 0.95;
 								}
 							@endphp
 								<td>{{$change}}</td>

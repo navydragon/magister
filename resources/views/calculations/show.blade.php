@@ -22,6 +22,31 @@
     <div class="row">
         <div class="col-lg-12">
             <h4>Этапов расчета: {{count($calculation->calculation_stages()->get())}}</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <td rowspan="2">Этап/Показатели</td>
+                     @foreach($calculation->our_machines_pivot()->get() as $our_machine)
+                        <td colspan="3">{{$our_machine->machine_type->name}} ({{$our_machine->tabnum}})</td>
+                     @endforeach
+                     </tr>
+                     <tr>
+                         @foreach($calculation->our_machines_pivot()->get() as $our_machine)
+                            <td>Kiv</td><td>Kr_mov</td><td>Kr_rot</td>
+                         @endforeach
+                     </tr>
+                     @foreach($calculation->calculation_stages()->get() as $stage)
+                     <tr>
+                         <td>{{$stage->stage_num}}</td>
+                         @foreach($stage->our_machines_pivot()->get() as $our_machine)
+                            <td>{{$our_machine->pivot->kiv}}</td>
+                            <td>{{$our_machine->pivot->moving_kmode}}</td>
+                            <td>{{$our_machine->pivot->rotation_kmode}}</td>
+                         @endforeach
+                     </tr>
+                     @endforeach
+                </thead>
+            </table>
         </div>
     </div>
     <hr>

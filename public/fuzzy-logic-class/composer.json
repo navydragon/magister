@@ -1,0 +1,6 @@
+{
+	"autoload":
+	{
+		"classmap": ["fuzzy-logic-class.php"]
+	}
+}

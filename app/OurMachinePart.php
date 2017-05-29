@@ -76,12 +76,11 @@ class OurMachinePart extends Model
         $x->addMember($x->getOutputName(0),'normal',20, 50 ,80 ,TRIANGLE);
         $x->addMember($x->getOutputName(0),'high',60,  80 , 100 ,RINFINITY);
         $x->clearRules();
-        $x->addRule('IF kmode.lite AND staff.high THEN optimism.high');
-        $x->addRule('IF kmode.lite AND staff.low THEN optimism.normal');
+        $x->addRule('IF kmode.lite THEN optimism.high');
+        //$x->addRule('IF kmode.lite AND staff.low THEN optimism.normal');
         $x->addRule('IF kmode.average AND staff.high THEN optimism.normal');
-        $x->addRule('IF kmode.average AND staff.low THEN  optimism.low');
+        $x->addRule('IF kmode.average AND staff.low THEN optimism.low');
         $x->addRule('IF kmode.tough THEN optimism.low');
-
         //$kmode = 65;
         //$staff = 50;
 
@@ -92,58 +91,71 @@ class OurMachinePart extends Model
         return round($optimism);
    }
 
-    public function efficiency($prev_eff,$nar,CalculationStage $stage)
+   public function first_efficiency($nar)
+   {
+        $a_sr = 0.01612; $a1_ap = 0.00395; $a2_ap = 0.0283;$b_ap = 0.95;
+        $k = (-1) * $a_sr / 1000000 * pow($nar,2) + $b_ap;
+        return $k;
+   }
+
+    public function efficiency($prev_eff, $prev_nar,$nar,CalculationStage $stage)
     {
         $calcs = 1000; $work_arr = array();$work_arr2 = array();
         //if ($this->work_type() == "rotation") {$a1_ap = 0.012; $a2_ap = 0.065; $b_ap = 0.895;}
     	//if ($this->work_type() == "moving") {$a1_ap = 0.008; $a2_ap = 0.050; $b_ap = 0.94;}
         $a1_ap = 0.00395; $a2_ap = 0.0283;  $b_ap = 0.95;
-    	$k1 = $this->kappa($nar,$a1_ap,$b_ap); // верхняя граница в конце периода
-		$k2 = $this->kappa($nar,$a2_ap,$b_ap); // нижняя граница в конце периода
-		$m_o = ($k1 + $k2) / 2;   // мат.ожидание
-        $s_o = $m_o / 3;
+    	//$k1 = $this->kappa($nar,$a1_ap,$b_ap); // верхняя граница в конце периода
+		//$k2 = $this->kappa($nar,$a2_ap,$b_ap); // нижняя граница в конце периода
+		//$m_o = ($k1 + $k2) / 2;   // мат.ожидание
+        //$s_o = $m_o / 3;
+            $m_o = ($a1_ap + $a2_ap) / 2;
+            $s_o = $m_o / 3;
         $optimism = $this->optimism($stage);
         for ($i = 1;$i<=$calcs;$i++)
         {
             $res = $this->Gauss($m_o,$s_o);
-            if ($res > $k1) {$res=$k1;}
-            if ($res < $k2) {$res=$k2;}
+            if ($res > $a2_ap) {$res=$a2_ap;}
+            if ($res < $a1_ap) {$res=$a1_ap;}
             array_push($work_arr,$res);
         }
-            sort($work_arr);
+            rsort($work_arr);
         for ($i=0;$i < count($work_arr);$i++)
         {
             if ($i%10 == 0) {array_push($work_arr2,$work_arr[$i]);}
         }
-            sort($work_arr2);
-            if ($work_arr2[$optimism] > $prev_eff) { return $prev_eff-0.001;}
-		return $work_arr2[$optimism];
+            rsort($work_arr2);
+            $work_a = $work_arr2[$optimism];
+            $eff = $prev_eff - $work_a / 1000000 * (pow($nar,2) - pow($prev_nar,2));
+		return $eff;
     }
 
 
 
     public function kyst($kpd,$nar,$tot_nar,CalculationStage $stage)
     {
-        //if ($this->work_type() == "rotation")  {$a_sr = 0.0385;}
-        //if ($this->work_type() == "moving")  {$a_sr = 0.029;}
+        if ($this->work_type() == "rotation")  {$koef = 1;}
+        if ($this->work_type() == "moving")  {$koef = 5;}
         $a_sr = 0.01612; $a1_ap = 0.00395; $a2_ap = 0.0283;$b_ap = 0.95;
         $optimism = $this->optimism($stage);
-        $a = $a1_ap+ ($a2_ap - $a1_ap) / 100 * (100-$optimism);
+        //$a = $a1_ap+ ($a2_ap - $a1_ap) / 100 * (100-$optimism);
+       
         if ($kpd >= 0.7)
         {
-            $t_max = round(sqrt(($b_ap-0.7)/($a_sr/1000000)));
+             $a = ($b_ap - $kpd) / pow($tot_nar,2) * 1000000;
+            $t_max = round(sqrt(($b_ap-0.7)/($a / 1000000)));
             $t_ost = $t_max - $tot_nar;
+            if ($t_ost < 200) {$t_ost = 201;}
             $kyst_p = 1 - 200 / $t_ost;
             $mtbf = $this->part->mtbf;
-            if ($tot_nar <= $mtbf ) 
+            if ($tot_nar <= $mtbf * $koef ) 
                 { $kyst_v = 0.99;}
-            else {$kyst_v = 1 - ($tot_nar / $mtbf - 1);}
+            else {$kyst_v = 1 - ($tot_nar / ($mtbf * $koef) - 1);}
             $kyst = round($kyst_p*$kyst_v,3);
         }else{
            
             $kyst = "!";
         }
-        return $kyst;
+        return $kyst."(".$t_max."/".$t_ost.")(".round($kyst_p,2).")(".round($kyst_v,2).")";
     }
 
     public function bgcolor($kyst)
